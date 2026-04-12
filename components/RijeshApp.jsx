@@ -324,7 +324,7 @@ function TxnItem({ t, typeColors, onDel, onRegret }) {
    GLOBAL CSS
 ════════════════════════════════════════ */
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+/* Fonts loaded via <link> in _document.js */
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body,#root{height:100%;}
@@ -683,11 +683,14 @@ export default function App() {
             <Panel {...props}/>
           </div>
           <div className="bottom-nav">
-            {TABS.map(t => (
-              <button key={t.id} className={`bnav-btn${tab===t.id?" bna":""}`} onClick={()=>setTab(t.id)}>
-                <span className="bnav-icon"><t.Icon/></span>{t.label}
-              </button>
-            ))}
+            {TABS.map(t => {
+              const NavIcon = t.Icon;
+              return (
+                <button key={t.id} className={`bnav-btn${tab===t.id?" bna":""}`} onClick={()=>setTab(t.id)}>
+                  <span className="bnav-icon"><NavIcon/></span>{t.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -698,11 +701,14 @@ export default function App() {
             <div className="sb-sub">Personal Finance Tracker</div>
           </div>
           <div className="sb-nav">
-            {TABS.map(t => (
-              <button key={t.id} className={`sb-btn${tab===t.id?" sba":""}`} onClick={()=>setTab(t.id)}>
-                <span className="sb-icon"><t.Icon/></span>{t.label}
-              </button>
-            ))}
+            {TABS.map(t => {
+              const SbIcon = t.Icon;
+              return (
+                <button key={t.id} className={`sb-btn${tab===t.id?" sba":""}`} onClick={()=>setTab(t.id)}>
+                  <span className="sb-icon"><SbIcon/></span>{t.label}
+                </button>
+              );
+            })}
           </div>
           <div className="sb-footer">
             <span className={`lock-badge ${readOnly?"locked":"unlocked"}`} style={{ width:"100%",justifyContent:"center" }}>
@@ -717,7 +723,10 @@ export default function App() {
         <div className="desktop-wrap">
           <div className="rf-header">
             <div>
-              <div className="logo" style={{ fontSize:15,display:"flex",alignItems:"center",gap:8 }}>{currentTab && <currentTab.Icon/>} {currentTab?.label}</div>
+              <div className="logo" style={{ fontSize:15,display:"flex",alignItems:"center",gap:8 }}>
+                {currentTab && (() => { const Hi = currentTab.Icon; return <Hi/>; })()}
+                {currentTab?.label}
+              </div>
               <div className="logo-sub">{statusLine}</div>
             </div>
             {headerRight}
