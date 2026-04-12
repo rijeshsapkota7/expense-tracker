@@ -94,8 +94,9 @@ function project(data) {
 
 /* ─── Hooks ─── */
 function useBreakpoint() {
-  const [bp, setBp] = useState(window.innerWidth);
+  const [bp, setBp] = useState(1200); // SSR-safe default
   useEffect(() => {
+    setBp(window.innerWidth);
     const fn = () => setBp(window.innerWidth);
     window.addEventListener("resize", fn);
     return () => window.removeEventListener("resize", fn);
@@ -449,23 +450,33 @@ html,body,#root{height:100%;}
   padding:5px 9px;cursor:pointer;font-family:'DM Mono',monospace;font-size:10px;transition:all .18s;}
 .btn-ghost:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);}
 .btn-export-json{
-  display:inline-flex;align-items:center;gap:8px;
-  background:linear-gradient(135deg,#6366f1,#818cf8);
-  color:#fff;border:none;border-radius:12px;padding:11px 18px;cursor:pointer;
-  font-family:'DM Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.04em;
-  box-shadow:0 0 18px rgba(99,102,241,.35),0 2px 8px rgba(0,0,0,.25);
-  transition:all .22s;white-space:nowrap;}
-.btn-export-json:hover{transform:translateY(-2px);box-shadow:0 0 28px rgba(99,102,241,.55),0 4px 16px rgba(0,0,0,.3);}
-.btn-export-json:active{transform:none;}
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  background:linear-gradient(135deg,#6366f1 0%,#818cf8 100%);
+  color:#fff;border:none;border-radius:16px;padding:14px 20px;cursor:pointer;
+  font-family:'Sora',sans-serif;font-size:12px;font-weight:700;letter-spacing:.03em;
+  box-shadow:0 4px 24px rgba(99,102,241,.45),inset 0 1px 0 rgba(255,255,255,.15);
+  transition:all .25s cubic-bezier(.4,0,.2,1);white-space:nowrap;position:relative;overflow:hidden;}
+.btn-export-json::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent);opacity:0;transition:opacity .2s;}
+.btn-export-json:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(99,102,241,.6),inset 0 1px 0 rgba(255,255,255,.2);}
+.btn-export-json:hover::before{opacity:1;}
+.btn-export-json:active{transform:translateY(0);box-shadow:0 2px 12px rgba(99,102,241,.4);}
 .btn-export-csv{
-  display:inline-flex;align-items:center;gap:8px;
-  background:linear-gradient(135deg,#10b981,#34d399);
-  color:#fff;border:none;border-radius:12px;padding:11px 18px;cursor:pointer;
-  font-family:'DM Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.04em;
-  box-shadow:0 0 18px rgba(16,185,129,.35),0 2px 8px rgba(0,0,0,.25);
-  transition:all .22s;white-space:nowrap;}
-.btn-export-csv:hover{transform:translateY(-2px);box-shadow:0 0 28px rgba(16,185,129,.55),0 4px 16px rgba(0,0,0,.3);}
-.btn-export-csv:active{transform:none;}
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  background:linear-gradient(135deg,#059669 0%,#10b981 50%,#34d399 100%);
+  color:#fff;border:none;border-radius:16px;padding:14px 20px;cursor:pointer;
+  font-family:'Sora',sans-serif;font-size:12px;font-weight:700;letter-spacing:.03em;
+  box-shadow:0 4px 24px rgba(16,185,129,.45),inset 0 1px 0 rgba(255,255,255,.15);
+  transition:all .25s cubic-bezier(.4,0,.2,1);white-space:nowrap;position:relative;overflow:hidden;}
+.btn-export-csv::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent);opacity:0;transition:opacity .2s;}
+.btn-export-csv:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(16,185,129,.6),inset 0 1px 0 rgba(255,255,255,.2);}
+.btn-export-csv:hover::before{opacity:1;}
+.btn-export-csv:active{transform:translateY(0);box-shadow:0 2px 12px rgba(16,185,129,.4);}
+.btn-import-file{display:flex;align-items:center;gap:12px;width:100%;background:rgba(255,255,255,.04);
+  border:2px dashed rgba(99,102,241,.3);border-radius:14px;padding:14px 16px;cursor:pointer;
+  font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.06em;
+  transition:all .22s;position:relative;}
+.btn-import-file:hover{border-color:rgba(99,102,241,.6);background:rgba(99,102,241,.06);color:rgba(255,255,255,.7);}
+.btn-import-file input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
 .btn-factory-reset{
   display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
   background:rgba(239,68,68,.06);color:#ef4444;
@@ -1324,19 +1335,21 @@ function Settings({ data, save, readOnly, setReadOnly, showToast }) {
 
           <div className="card">
             <div className="card-title">Data Management</div>
-            <div style={{ display:"flex",gap:10,marginBottom:12 }}>
+            <div style={{ display:"flex",gap:12,marginBottom:16 }}>
               <button className="btn-export-json" onClick={exportJSON} style={{ flex:1 }}>
-                <span style={{ fontSize:15 }}>📦</span> Export JSON
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export JSON
               </button>
               <button className="btn-export-csv" onClick={exportCSV} style={{ flex:1 }}>
-                <span style={{ fontSize:15 }}>📊</span> Export CSV
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export CSV
               </button>
             </div>
-            <div style={{ fontFamily:"'DM Mono',monospace",fontSize:10,color:"rgba(255,255,255,.3)",marginBottom:8,letterSpacing:".08em" }}>
-              IMPORT JSON {readOnly?"(UNLOCK FIRST)":""}
-            </div>
-            <input type="file" accept=".json" onChange={importJSON} disabled={readOnly}
-              style={{ fontFamily:"'DM Mono',monospace",fontSize:11,color:"rgba(255,255,255,.35)",width:"100%",cursor:readOnly?"not-allowed":"pointer" }}/>
+            <label className="btn-import-file" style={{ opacity:readOnly?.45:1,pointerEvents:readOnly?"none":"auto" }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              {readOnly ? "IMPORT JSON — UNLOCK FIRST" : "IMPORT JSON — CLICK TO CHOOSE FILE"}
+              <input type="file" accept=".json" onChange={importJSON} disabled={readOnly} style={{ display:"none" }}/>
+            </label>
             {!readOnly&&(
               <div style={{ marginTop:20,paddingTop:16,borderTop:"1px solid rgba(239,68,68,.12)" }}>
                 <div style={{ fontFamily:"'DM Mono',monospace",fontSize:10,color:"rgba(239,68,68,.5)",marginBottom:8,letterSpacing:".1em" }}>DANGER ZONE</div>
