@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+  <title>Rijesh.Finance</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Mobile topbar -->
+<header class="topbar">
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="3" y1="6"  x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+  <span class="topbar-brand">Rijesh<span class="brand-dot">.</span>Finance</span>
+  <span id="lockBadge" class="lock-badge locked">🔒 Locked</span>
+</header>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div>
+      <div class="sb-logo">Rijesh<span class="brand-dot">.</span>Finance</div>
+      <div class="sb-sub">Personal Finance Tracker</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="nav-item active" data-section="home">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Home
+    </button>
+    <button class="nav-item" data-section="add">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Add Entry
+    </button>
+    <button class="nav-item" data-section="log">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Log
+    </button>
+    <button class="nav-item" data-section="goals">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      Goals
+    </button>
+    <button class="nav-item" data-section="roadmap">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+      Roadmap
+    </button>
+    <button class="nav-item" data-section="stats">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+      Stats
+    </button>
+    <button class="nav-item" data-section="settings">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+      Settings
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <span id="sbLockBadge" class="lock-badge locked">🔒 Locked</span>
+    <div class="sync-status"><span class="sync-dot" id="syncDot"></span><span id="syncLabel">Loading…</span></div>
+    <div class="version-tag">v4.0 · Vercel KV</div>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main-content">
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-spinner"></div>
+    <p>Loading Rijesh.Finance…</p>
+  </div>
+
+  <input type="file" id="importFileInput" accept=".json" class="visually-hidden" tabindex="-1" aria-hidden="true"/>
+
+  <div id="appContent" class="hidden">
+
+    <!-- ── HOME ── -->
+    <section class="section active" id="home">
+      <div class="page-header">
+        <h1>Home</h1>
+        <div class="header-meta"><span class="live-dot"></span>Live · All devices &nbsp;|&nbsp; <span id="todayDate"></span></div>
+      </div>
+
+      <!-- Hero balance card -->
+      <div class="card hero-card">
+        <div class="hero-left">
+          <div class="card-label">AVAILABLE BALANCE</div>
+          <div class="hero-balance" id="heroBalance">Rs. 0</div>
+          <div id="lockedBadge" class="locked-badge hidden">🔒 <span id="lockedAmt"></span> locked</div>
+          <div class="goal-bar-wrap">
+            <div class="goal-bar-labels">
+              <span class="card-label">Monthly Saving Goal</span>
+              <span id="goalProgress" class="goal-nums">Rs. 0 / Rs. 0</span>
+            </div>
+            <div class="pbar-track"><div class="pbar-fill accent" id="goalBar" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div class="score-ring-wrap">
+          <svg id="scoreRingSvg" width="110" height="110" viewBox="0 0 110 110">
+            <circle cx="55" cy="55" r="46" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+            <circle id="scoreArc" cx="55" cy="55" r="46" fill="none" stroke="#ef4444" stroke-width="8"
+              stroke-dasharray="289" stroke-dashoffset="289" stroke-linecap="round"
+              transform="rotate(-90 55 55)" style="transition:stroke-dashoffset 1s ease,stroke 0.5s"/>
+          </svg>
+          <div class="score-center"><div class="score-num" id="scoreNum">40</div><div class="score-label" id="scoreLabel">FAIR</div></div>
+        </div>
+      </div>
+
+      <!-- Wallet / Spendable -->
+      <div class="two-col-strip">
+        <div class="strip-card green">
+          <div class="strip-label">WALLET / BANK</div>
+          <div class="strip-val green-text" id="walletVal">Rs. 0</div>
+          <div class="strip-sub">Set in Settings → Config</div>
+        </div>
+        <div class="strip-card purple">
+          <div class="strip-label">SPENDABLE NOW</div>
+          <div class="strip-val purple-text" id="spendableVal">Rs. 0</div>
+          <div class="strip-sub">After expenses + savings</div>
+        </div>
+      </div>
+
+      <!-- 4-stat grid -->
+      <div class="stat-grid4">
+        <div class="stat-box"><div class="stat-box-label">TOTAL SAVED</div><div class="stat-box-val purple-text" id="statTotalSaved">Rs. 0</div></div>
+        <div class="stat-box"><div class="stat-box-label">INVESTED</div><div class="stat-box-val amber-text" id="statInvested">Rs. 0</div></div>
+        <div class="stat-box"><div class="stat-box-label">MONTH SPENT</div><div class="stat-box-val red-text" id="statMonthSpent">Rs. 0</div></div>
+        <div class="stat-box"><div class="stat-box-label">MONTH INCOME</div><div class="stat-box-val green-text" id="statMonthIncome">Rs. 0</div></div>
+      </div>
+
+      <div class="two-col-grid">
+        <!-- Today's activity -->
+        <div>
+          <div class="card">
+            <div class="card-label mb12">TODAY'S ACTIVITY</div>
+            <div class="today-row">
+              <div class="today-box red-bg"><div class="today-box-label red-text">SPENT</div><div class="today-box-val red-text" id="todaySpent">Rs. 0</div></div>
+              <div class="today-box purple-bg"><div class="today-box-label purple-text">SAVED</div><div class="today-box-val purple-text" id="todaySaved">Rs. 0</div></div>
+            </div>
+            <button class="nospend-btn" id="noSpendBtn">Mark as No-Spend Day</button>
+          </div>
+          <div class="card mt14">
+            <div class="card-label mb12">DISCIPLINE STREAKS</div>
+            <div class="streak-row">
+              <span class="streak-pill">🔥 Streak: <span id="streakCount">0</span> days</span>
+              <span class="streak-pill">📅 This month: <span id="monthNoSpend">0</span> days</span>
+            </div>
+          </div>
+        </div>
+        <!-- Weekly intel + alerts -->
+        <div>
+          <div class="card">
+            <div class="card-label mb12">WEEKLY INTEL</div>
+            <div class="intel-row">
+              <div><div class="intel-label">SPENT</div><div class="intel-val red-text" id="weekSpent">Rs. 0</div></div>
+              <div><div class="intel-label">SAVED</div><div class="intel-val green-text" id="weekSaved">Rs. 0</div></div>
+              <div><div class="intel-label">TXNS</div><div class="intel-val purple-text" id="weekTxns">0</div></div>
+            </div>
+          </div>
+          <div class="card mt14" id="alertsCard">
+            <div class="card-label mb12">ALERTS</div>
+            <div id="alertsList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── ADD ENTRY ── -->
+    <section class="section" id="add">
+      <div class="page-header"><h1>Add Entry</h1></div>
+      <div class="two-col-grid" style="align-items:start">
+        <div class="card">
+          <div class="card-label mb16" id="addLabel">NEW EXPENSE</div>
+          <div class="amount-field-wrap">
+            <div class="amount-prefix">Rs.</div>
+            <input type="number" id="addAmount" class="amount-input" placeholder="0" min="0" step="any" autocomplete="off"/>
+          </div>
+          <div class="type-tabs mb16">
+            <button class="type-tab active te" data-type="expense">Expense</button>
+            <button class="type-tab ti" data-type="income">Income</button>
+            <button class="type-tab ts" data-type="saving">Saving</button>
+            <button class="type-tab tv" data-type="investment">Invest</button>
+          </div>
+          <div class="field-row mb12">
+            <div class="field-group">
+              <label>CATEGORY</label>
+              <select id="addCategory">
+                <option>Food</option><option>Study</option><option>Health</option>
+                <option>Tech</option><option>Entertainment</option><option>Transport</option><option>Other</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>DATE</label>
+              <input type="date" id="addDate" class="inp"/>
+            </div>
+          </div>
+          <div class="field-group mb12">
+            <label>NOTE</label>
+            <input type="text" id="addNote" class="inp" placeholder="What was this for?" maxlength="300" autocomplete="off"/>
+          </div>
+          <div id="worthSection">
+            <div class="card-label mb8">WORTH IT?</div>
+            <div class="worth-tabs mb12">
+              <button class="worth-tab active" data-worth="yes" style="--wc:#10b981">✓ Yes</button>
+              <button class="worth-tab" data-worth="no"  style="--wc:#ef4444">✗ No</button>
+              <button class="worth-tab" data-worth="maybe" style="--wc:#f59e0b">? Maybe</button>
+            </div>
+            <label class="regret-label">
+              <input type="checkbox" id="addRegret"/> Mark as regret spending
+            </label>
+          </div>
+          <button class="btn btn-primary full-btn mt16" id="addEntryBtn">Log Entry</button>
+        </div>
+        <div class="card">
+          <div class="card-label mb16">QUICK TIPS</div>
+          <div class="tip-list">
+            <div class="tip-item"><span class="tip-icon">💡</span><span>Log every transaction — even small ones add up.</span></div>
+            <div class="tip-item"><span class="tip-icon">🎯</span><span>Mark regret expenses to spot bad habits monthly.</span></div>
+            <div class="tip-item"><span class="tip-icon">🔒</span><span>Lock after logging to prevent accidental edits.</span></div>
+            <div class="tip-item"><span class="tip-icon">📅</span><span>No-spend days build your streak and discipline.</span></div>
+            <div class="tip-item"><span class="tip-icon">📊</span><span>Check Stats monthly to see where money actually goes.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── LOG ── -->
+    <section class="section" id="log">
+      <div class="page-header"><h1>Log</h1></div>
+      <div class="card mb16">
+        <div class="card-label mb12">FILTERS</div>
+        <div class="filter-row">
+          <select id="filterType" class="inp"><option value="all">All Types</option><option value="expense">Expense</option><option value="income">Income</option><option value="saving">Saving</option><option value="investment">Investment</option></select>
+          <select id="filterCat"  class="inp"><option value="all">All Categories</option><option>Food</option><option>Study</option><option>Health</option><option>Tech</option><option>Entertainment</option><option>Transport</option><option>Other</option></select>
+          <input type="month" id="filterMonth" class="inp"/>
+        </div>
+      </div>
+      <div id="logRegretBar" class="regret-bar hidden"></div>
+      <div id="txnList" class="txn-list"></div>
+    </section>
+
+    <!-- ── GOALS ── -->
+    <section class="section" id="goals">
+      <div class="page-header"><h1>Goals</h1></div>
+      <div class="card hero-card mb16" style="background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(16,185,129,.05));border-color:rgba(99,102,241,.2)">
+        <div class="hero-left">
+          <div class="card-label">TOTAL GOAL PROGRESS</div>
+          <div class="hero-balance purple-text" id="goalsTotalSaved">Rs. 0</div>
+          <div class="card-label" id="goalsTotalOf">of Rs. 0</div>
+        </div>
+        <div class="big-pct purple-text" id="goalsTotalPct">0%</div>
+      </div>
+      <div class="two-col-grid" style="align-items:start">
+        <div id="goalsListLeft"></div>
+        <div>
+          <div id="goalsListRight"></div>
+          <div class="card" style="border-color:rgba(99,102,241,.2)">
+            <div class="card-label mb16">CREATE NEW GOAL</div>
+            <input type="text" id="goalName" class="inp mb10" placeholder="Goal name" maxlength="100" autocomplete="off"/>
+            <input type="number" id="goalTarget" class="inp mb10" placeholder="Target amount (Rs.)" min="0" step="any" autocomplete="off"/>
+            <div class="field-row mb10">
+              <div class="field-group"><label>DEADLINE</label><input type="date" id="goalDeadline" class="inp"/></div>
+              <div class="field-group">
+                <label>ICON</label>
+                <select id="goalIcon" class="inp">
+                  <option>🎯</option><option>🎓</option><option>💻</option><option>🛡️</option>
+                  <option>✈️</option><option>📱</option><option>🏥</option><option>📚</option>
+                  <option>🏠</option><option>💎</option><option>🚗</option><option>🎮</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-label mb8">COLOR</div>
+            <div class="color-swatches mb16" id="colorSwatches">
+              <div class="swatch active" data-color="#6366f1" style="background:#6366f1"></div>
+              <div class="swatch" data-color="#10b981" style="background:#10b981"></div>
+              <div class="swatch" data-color="#f59e0b" style="background:#f59e0b"></div>
+              <div class="swatch" data-color="#ef4444" style="background:#ef4444"></div>
+              <div class="swatch" data-color="#ec4899" style="background:#ec4899"></div>
+              <div class="swatch" data-color="#a78bfa" style="background:#a78bfa"></div>
+            </div>
+            <button class="btn btn-primary full-btn" id="addGoalBtn">Create Goal</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── ROADMAP ── -->
+    <section class="section" id="roadmap">
+      <div class="page-header"><h1>Roadmap</h1></div>
+      <div class="card hero-card mb16" style="background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(239,68,68,.05));border-color:rgba(245,158,11,.2)">
+        <div class="hero-left">
+          <div class="card-label">TOTAL UPCOMING</div>
+          <div class="hero-balance amber-text" id="roadmapTotal">Rs. 0</div>
+          <div class="card-label" id="roadmapCount">0 upcoming expenses</div>
+        </div>
+      </div>
+      <div class="two-col-grid" style="align-items:start">
+        <div class="card"><div class="card-label mb16">TIMELINE</div><div id="roadmapList"></div></div>
+        <div class="card" style="border-color:rgba(245,158,11,.2)">
+          <div class="card-label mb16">PLAN NEW EXPENSE</div>
+          <input type="text" id="roadName" class="inp mb10" placeholder="Name (e.g. Phone Repair)" maxlength="100" autocomplete="off"/>
+          <input type="number" id="roadAmount" class="inp mb10" placeholder="Amount (Rs.)" min="0" step="any" autocomplete="off"/>
+          <input type="date" id="roadDate" class="inp mb16"/>
+          <button class="btn btn-amber full-btn" id="addRoadBtn">Add to Roadmap</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── STATS ── -->
+    <section class="section" id="stats">
+      <div class="page-header"><h1>Stats</h1></div>
+      <div class="card mb16"><div class="card-label mb8">SELECT PERIOD</div><input type="month" id="statMonth" class="inp" style="max-width:220px"/></div>
+      <div class="stat-grid4 mb16">
+        <div class="stat-box"><div class="stat-box-label">TOTAL SPENT</div><div class="stat-box-val purple-text" id="stTotalSpent">Rs. 0</div></div>
+        <div class="stat-box"><div class="stat-box-label">REGRET</div><div class="stat-box-val red-text" id="stRegret">Rs. 0</div></div>
+        <div class="stat-box"><div class="stat-box-label">NOT WORTH IT</div><div class="stat-box-val amber-text" id="stNotWorth">Rs. 0</div></div>
+        <div class="stat-box"><div class="stat-box-label">TRANSACTIONS</div><div class="stat-box-val green-text" id="stTxnCount">0</div></div>
+      </div>
+      <div class="two-col-grid" style="align-items:start">
+        <div class="card"><div class="card-label mb16">CATEGORY BREAKDOWN</div><div id="statsCats"></div></div>
+        <div class="card"><div class="card-label mb16">DAILY SPENDING</div><div id="statsDaily"></div></div>
+      </div>
+    </section>
+
+    <!-- ── SETTINGS ── -->
+    <section class="section" id="settings">
+      <div class="page-header"><h1>Settings</h1></div>
+      <div class="two-col-grid" style="align-items:start">
+        <div>
+          <!-- Auth card -->
+          <div class="card mb16" id="authCard">
+            <div class="settings-row-hdr">
+              <div><h3>Write Access</h3><p>Enter your write key to enable editing.</p></div>
+              <span id="authStatus" class="lock-badge locked">🔒 Locked</span>
+            </div>
+            <div id="unlockArea">
+              <input type="password" id="keyInput" class="inp mb10" placeholder="Write key…" autocomplete="off"/>
+              <button class="btn btn-primary full-btn" id="unlockBtn">Unlock</button>
+              <div id="keyError" class="key-error hidden"></div>
+            </div>
+            <button class="btn btn-ghost full-btn hidden mt10" id="lockBtn">🔒 Lock System</button>
+          </div>
+
+          <!-- Monthly report -->
+          <div class="card mb16">
+            <div class="card-label mb16">MONTHLY REPORT — <span id="reportMonth"></span></div>
+            <div class="report-row"><span>Income</span><span class="green-text" id="rIncome">Rs. 0</span></div>
+            <div class="report-row"><span>Expenses</span><span class="red-text" id="rExpenses">Rs. 0</span></div>
+            <div class="report-row"><span>Saved</span><span class="purple-text" id="rSaved">Rs. 0</span></div>
+            <div class="report-row"><span>Score</span><span id="rScore" class="amber-text">40/100</span></div>
+          </div>
+
+          <!-- Data management -->
+          <div class="card">
+            <div class="card-label mb16">DATA MANAGEMENT</div>
+            <div class="backup-btns mb16">
+              <button class="btn btn-primary" id="exportJsonBtn">⬇ Export JSON</button>
+              <button class="btn btn-green"   id="exportCsvBtn">⬇ Export CSV</button>
+            </div>
+            <label class="import-label" id="importLabel">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              IMPORT JSON — CLICK TO CHOOSE FILE
+            </label>
+            <div id="dangerZone" class="hidden mt20">
+              <div class="card-label danger-label mb8">DANGER ZONE</div>
+              <button class="btn btn-danger full-btn" id="resetBtn">💥 FACTORY RESET — Wipe All Data</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <!-- Financial config -->
+          <div class="card mb16" id="configCard">
+            <div class="card-label mb16">FINANCIAL CONFIG</div>
+            <div class="field-group mb12"><label>CURRENT WALLET / BANK BALANCE (RS.)</label><input type="number" id="cfgWallet" class="inp" min="0" step="any"/></div>
+            <div class="field-group mb12"><label>MONTHLY INCOME (RS.)</label><input type="number" id="cfgIncome" class="inp" min="0" step="any"/></div>
+            <div class="field-group mb12"><label>MONTHLY SAVING GOAL (RS.)</label><input type="number" id="cfgGoal" class="inp" min="0" step="any"/></div>
+            <div class="field-group mb16"><label>LOCKED MONEY (RS.)</label><input type="number" id="cfgLocked" class="inp" min="0" step="any"/></div>
+            <div class="sync-info mb16">
+              <div class="sync-info-row"><span id="cloudStatus">☁ CLOUD SYNCED</span><button class="btn-sync-now" id="forceSyncBtn">Sync Now</button></div>
+              <div class="sync-info-sub" id="lastSynced">Auto-syncs on every change</div>
+            </div>
+            <button class="btn btn-primary full-btn" id="saveConfigBtn">Save Configuration</button>
+          </div>
+          <!-- About -->
+          <div class="card">
+            <div class="card-label mb12">ABOUT</div>
+            <p class="about-text">Rijesh Finance is your personal finance tracker built for discipline and consistency.</p>
+            <p class="about-text mt8">Unlock with your write key to edit income targets, configure the database, or change any settings.</p>
+            <p class="about-text mt8">All data is stored and synced to Vercel KV (cloud) — no localStorage.</p>
+            <div class="version-tag mt16">RIJESH.FINANCE · v4.0 · BUILT FOR DISCIPLINE</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- appContent -->
+</main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="modal-icon">!</div>
+    <h3 id="modalTitle">Confirm</h3>
+    <p id="modalMsg"></p>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="modalCancel">Cancel</button>
+      <button class="btn btn-primary" id="modalConfirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
