@@ -1,8 +1,0 @@
-{
-  "name": "rijesh-finance",
-  "version": "4.0.0",
-  "description": "Rijesh Finance Tracker — plain HTML/CSS/JS + Vercel KV",
-  "type": "module",
-  "scripts": { "start": "echo Run on Vercel" },
-  "dependencies": { "@vercel/kv": "^3.0.0" }
-}
